@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pytest = "*"
+pylint = "*"
+behave = "*"
+requests-mock = "*"
+autopep8 = "*"
+
+[packages]
+pika= "*"
+flask = "*"
+flask-swagger-ui = "*"
+pyaml = "*"
+structlog = "*"
+
+[requires]
+python_version = "3.7"
