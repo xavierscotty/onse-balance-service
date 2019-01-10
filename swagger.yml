@@ -1,0 +1,80 @@
+---
+swagger: "2.0"
+
+info:
+  version: 1.0.0
+  title: Balance Service API
+  description: Provide account balance details
+
+host: "localhost:5000"
+schemes:
+  - http
+
+paths:
+  /health:
+    get:
+      summary: Check the health of the service
+      description: Returns a message indicating the health of the service
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Service is up and running
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                description: Contains the string "OK"
+  /balance/{accountNumber}:
+    get:
+      summary: |
+       The balance of the customer’s account is expressed in three ways – cleared balance, effective balance and pending transactions. The cleared balance is the settled balance on the account and so does not include pending transactions. The effective balance includes pending transactions, and is the value most commonly presented to the customer.
+      description: Returns balance information for a specific account.
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: accountNumber
+          required: true
+          description: Data relating to the event at the point-of-time
+          type: string
+          x-example: '999999'
+      responses:
+        202:
+          description: Received was received ok and will process shortly.
+          schema:
+              $ref: "#/definitions/Response"
+        404:
+          description: Operation failed
+
+definitions:
+ Response:
+    type: object
+    description: Balance details
+    properties:
+      accountNumber:
+        type: string
+        description: Account number
+      clearedBalance:
+       type: number
+       description: The currently available balance of the account
+      effectiveBalance:
+        type: string
+        description: Balance includes pending transactions
+      pendingTransactions:
+        type: array
+        description: A descrite event that happen at a point in time
+        items:
+          $ref: "#/definitions/PendingTransaction"
+ PendingTransaction:
+    type: object
+    description: Pending transactions
+    properties:
+      amount:
+        type: number
+      operation:
+        type: string
+        enum:
+        - debit
+        - credit
