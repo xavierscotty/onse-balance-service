@@ -1,13 +1,15 @@
 import json
 from http import HTTPStatus
 
+
 @given(u'a bank account "{account_number}" with balance "{cleared_balance:d}"')
 def step_impl(context, account_number, cleared_balance):
     account_data = {
-        'accountNumber': account_number,
-        'clearedBalance': cleared_balance
+        "accountNumber": account_number,
+        "clearedBalance": cleared_balance
     }
-    context.balance_repository.store(account_number, json.dumps(account_data))
+    context.balance_repository.store(account_number, account_data)
+
 
 @when(u'I request the account "{account_number}" balance')
 def step_impl(context, account_number):
@@ -18,7 +20,6 @@ def step_impl(context, account_number):
 @then(u'the account balance should be "{cleared_balance:d}"')
 def step_impl(context, cleared_balance):
     response = context.response.get_json()
-    print(response['clearedBalance'])
     assert response['clearedBalance']
     assert response['clearedBalance'] == cleared_balance
 

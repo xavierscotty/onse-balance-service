@@ -1,18 +1,31 @@
 from flask_redis import FlaskRedis
+from json import loads, dumps
+
+from balance_service.worker.config import config
+
+class RedisJsonFlaskConnection(FlaskRedis):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def _set(self, key, value):
+        self.set(key, dumps(value))
+
+    def _get(self, key):
+        result = self.get(key)
+        if result == None:
+            return None
+        return loads(result)
 
 
-class BalanceRepository(FlaskRedis):
+class BalanceRepository(RedisJsonFlaskConnection):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def store(self, account_number, account_data):
-        self.set(account_number, account_data)
+        self._set(f'{config.BALANCE_NAMESPACE}:{account_number}', account_data)
 
     def fetch_by_account_number(self, account_number):
-        result = self.get(f'balance:{account_number}')
-        if result == None:
-            raise AccountNotFound()
-        return result
+        return self._get(f'{config.BALANCE_NAMESPACE}:{account_number}')
 
 
 class AccountNotFound(RuntimeError):

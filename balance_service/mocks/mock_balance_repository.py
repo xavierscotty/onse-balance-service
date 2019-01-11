@@ -13,7 +13,7 @@ class MockBalanceRepository():
         app.extensions[self.config_prefix.lower()] = self
 
     def store(self, account_number, account_data):
-        self._store[account_number] = str(account_data)
+        self._store[account_number] = dumps(account_data)
 
     def fetch_by_account_number(self, account_number):
         result = self._store.get(account_number)

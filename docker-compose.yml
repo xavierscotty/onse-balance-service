@@ -3,7 +3,7 @@ services:
     balance-app:
       build:
         context: .
-        dockerfile: Dockerfile-app
+        dockerfile: Dockerfile.app
       restart: always
       volumes:
         - .:/app
@@ -17,21 +17,36 @@ services:
         BALANCE_NAMESPACE: balance
       networks:
         - default
-    # balancer-worker:
-    #   build: .
-    #   restart: always
-    #   volumes:
-    #     - .:/app
-    #   ports:
-    #     - 5000:5000
-    #   environment:
-    #     PORT: 5000
-    #   networks:
-    #     - default
+    balancer-worker:
+      build:
+        context: .
+        dockerfile: Dockerfile.worker
+      restart: always
+      depends_on:
+        - message-bus
+        - balance-store
+      volumes:
+        - .:/app
+      environment:
+        REDIS_URL: redis://balance-store:6379
+        BALANCE_NAMESPACE: balance
+        RABBITMQ_PORT: 5672
+        RABBITMQ_HOST: message-bus
+        RABBITMQ_CONSUMER_QUEUE: balance_updates
+      networks:
+        - default
     balance-store:
       image: redis
       ports:
         - "6379"
+    message-bus:
+      image: 'rabbitmq:3-management'
+      hostname: rabbitmq-host
+      ports:
+        - "5672"
+        - "15672:15672"
+      networks:
+        - default
 
 
 networks:

@@ -1,3 +1,4 @@
+@app
 Feature: Get the account balance
   As a client I want to get the account balance details so that I can check whether account has sufficient funds.
 

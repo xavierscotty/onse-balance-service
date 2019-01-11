@@ -3,9 +3,10 @@ from flask import Flask
 
 from balance_service.app.controllers.heatlh import health
 from balance_service.app.controllers.balance import balance
-from balance_service.app.mock.mock_balance_repository import MockBalanceRepository
+from balance_service.mocks.mock_balance_repository import MockBalanceRepository
 from balance_service.app.app import create
 from balance_service.app import config
+
 
 @pytest.fixture
 def balance_repository():
