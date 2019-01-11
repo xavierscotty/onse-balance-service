@@ -59,22 +59,4 @@ definitions:
       clearedBalance:
        type: number
        description: The currently available balance of the account
-      effectiveBalance:
-        type: string
-        description: Balance includes pending transactions
-      pendingTransactions:
-        type: array
-        description: A descrite event that happen at a point in time
-        items:
-          $ref: "#/definitions/PendingTransaction"
- PendingTransaction:
-    type: object
-    description: Pending transactions
-    properties:
-      amount:
-        type: number
-      operation:
-        type: string
-        enum:
-        - debit
-        - credit
+

@@ -4,8 +4,6 @@ from balance_service.app.controllers.swagger import setup_swagger
 from balance_service.app.controllers.heatlh import health
 from balance_service.app.controllers.balance import balance
 
-import json
-
 def create(config, repository):
     app = Flask(__name__)
     app.config.from_object(config)
