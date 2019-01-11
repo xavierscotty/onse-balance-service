@@ -16,6 +16,8 @@ flask = "*"
 flask-swagger-ui = "*"
 pyaml = "*"
 structlog = "*"
+redis = "*"
+flask-redis = "*"
 
 [requires]
 python_version = "3.7"

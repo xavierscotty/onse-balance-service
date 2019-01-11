@@ -1,16 +1,38 @@
 version: "3"
 services:
-    cashier-service:
-      build: .
+    balance-app:
+      build:
+        context: .
+        dockerfile: Dockerfile-app
       restart: always
       volumes:
         - .:/app
       ports:
         - 5000:5000
+      depends_on:
+        - balance-store
       environment:
         PORT: 5000
+        REDIS_URL: redis://balance-store:6379
+        BALANCE_NAMESPACE: balance
       networks:
         - default
+    # balancer-worker:
+    #   build: .
+    #   restart: always
+    #   volumes:
+    #     - .:/app
+    #   ports:
+    #     - 5000:5000
+    #   environment:
+    #     PORT: 5000
+    #   networks:
+    #     - default
+    balance-store:
+      image: redis
+      ports:
+        - "6379"
+
 
 networks:
   default:
