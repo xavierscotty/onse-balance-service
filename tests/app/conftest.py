@@ -14,7 +14,7 @@ def balance_repository():
 
 @pytest.fixture
 def app(balance_repository):
-    app = create(config.dev_config, repository=balance_repository)
+    app = create(config.config, repository=balance_repository)
     return app
 
 

@@ -2,12 +2,6 @@ from flask import Flask
 
 from balance_service.app import config
 
-def test_development_config():
-    app = Flask(__name__)
-    app.config.from_object(config.dev_config)
-    assert app.config['ENV'] == 'development'
-    assert not app.config['TESTING']
-
 
 def test_default_config():
     app = Flask(__name__)
@@ -16,7 +10,7 @@ def test_default_config():
     assert app.config['SWAGGER_FILE_PATH']
     assert app.config['APP_NAME']
     assert app.config['REDIS_URL']
-    assert app.config['ENV'] == 'production'
+    assert app.config['ENV'] == 'development'
 
 
 def test_test_config():
