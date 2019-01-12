@@ -10,23 +10,33 @@ from balance_service.worker.worker import Worker
 
 def before_feature(context, feature):
     if 'app' in feature.tags:
-        from balance_service.app import config
-        balance_repository = MockBalanceRepository()
-        application = app.create(config=config.test_config,
-                                 repository=balance_repository)
-        context.web_client = application.test_client()
-        context.balance_repository = balance_repository
+        before_app_feature(context)
     elif 'worker' in feature.tags:
-        from balance_service.worker.config import config
-        balance_repository = MockBalanceRepository()
-        logger = logging.getLogger()
-        logger.addHandler(logging.NullHandler())
-        worker = Worker(consumer=MockEvents(),
-                        balance=balance_repository,
-                        config=config,
-                        logger=wrap_logger(logger))
-        context.worker = worker
-        context.balance_repository = balance_repository
-        context.logger = logger
+        before_worker_feature(context)
     else:
         raise Exception
+
+
+def before_app_feature(context):
+    from balance_service.app import config
+    balance_repository = MockBalanceRepository()
+    application = app.create(config=config.test_config,
+                             repository=balance_repository)
+    context.web_client = application.test_client()
+    context.balance_repository = balance_repository
+
+
+def before_worker_feature(context):
+    from balance_service.worker.config import config
+    balance_repository = MockBalanceRepository()
+    logger = logging.getLogger()
+    logger.addHandler(logging.NullHandler())
+    worker = Worker(consumer=MockEvents(),
+                    balance=balance_repository,
+                    config=config,
+                    logger=wrap_logger(logger))
+    context.worker = worker
+    context.balance_repository = balance_repository
+    context.logger = logger
+
+    worker.start()

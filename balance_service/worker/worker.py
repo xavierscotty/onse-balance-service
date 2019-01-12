@@ -1,6 +1,3 @@
-from balance_service.worker.model.balance_calculator import BalanceCalculator
-
-
 class Worker:
     def __init__(self, consumer, balance, logger, config=None):
         self.consumer = consumer
@@ -17,23 +14,14 @@ class Worker:
         self.logger.debug('Received balance event:', received_event=event)
 
         account_number = event['accountNumber']
-        amount = int(event['amount'])
+        balance = int(event['balance'])
 
-        available_balance = self.balance.fetch_by_account_number(
-            account_number)
         data = {
             'accountNumber': account_number,
-            'clearedBalance': None
+            'clearedBalance': balance
         }
-        if available_balance is None:
-            data['clearedBalance'] = amount
-        else:
-            self.logger.debug('Found account with balance')
-            balance_calculator = BalanceCalculator(
-                available_balance['clearedBalance'])
-            data['clearedBalance'] = balance_calculator.calculate(amount)
 
         self.balance.store(account_number, data)
 
-        self.logger.debug(f'Successfulty sync balance:',
+        self.logger.debug(f'Successfully sync balance:',
                           process_event='update-balance')

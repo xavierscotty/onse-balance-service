@@ -28,46 +28,46 @@ def logger():
     return Mock()
 
 
-def test_a_message_is_logged_on_start(worker, logger, balance):
+def test_a_message_is_logged_on_start(worker, logger):
     worker.start()
     logger.info.assert_called_with(
         f'Worker -{config.APP_NAME}- starts event processing')
 
 
-def test_a_message_is_logged_on_event(worker, logger, balance):
-    event = {'accountNumber': '1234', 'amount': 99}
+def test_a_message_is_logged_on_event(worker, logger):
+    event = {'accountNumber': '1234', 'balance': 99}
     worker.consumer.produce(event)
     logger.debug.assert_called_with(
-        'Successfulty sync balance:', process_event='update-balance')
+        'Successfully sync balance:', process_event='update-balance')
 
 
-def test_the_worker_should_updates_balance(worker, logger, balance):
-    event_v1 = {"accountNumber": "1234", "amount": "1"}
-    event_v2 = {"accountNumber": "1234", "amount": "3"}
-    final_balance = 4
+def test_the_worker_should_updates_balance(worker, balance):
+    event_v1 = {"accountNumber": "1234", "balance": "1"}
+    event_v2 = {"accountNumber": "1234", "balance": "3"}
     worker.consumer.produce(event_v1)
     worker.consumer.produce(event_v2)
-    assert balance.fetch_by_account_number(
-        "1234")['clearedBalance'] == final_balance
+    expected_balance = 3
+    stored_balance = balance.fetch_by_account_number("1234")['clearedBalance']
+    assert stored_balance == expected_balance
 
 
-def test_the_worker_should_not_updates_balance(worker, logger, balance):
+def test_the_worker_should_not_updates_balance(worker, balance):
     account_number = '12340'
-    event_v1 = {"accountNumber": account_number, "amount": "1"}
-    event_v2 = {"accountNumber": "12370", "amount": "3"}
+    event_v1 = {"accountNumber": account_number, "balance": "1"}
+    event_v2 = {"accountNumber": "12370", "balance": "3"}
     final_balance = 1
     worker.consumer.produce(event_v1)
     worker.consumer.produce(event_v2)
-    assert balance.fetch_by_account_number(
-        account_number)['clearedBalance'] == final_balance
+    stored_balance = balance.fetch_by_account_number(account_number)['clearedBalance']  # noqa
+    assert stored_balance == final_balance
 
 
-def test_the_worker_should_support_negative_balance(worker, logger, balance):
+def test_the_worker_should_support_negative_balance(worker, balance):
     account_number = '12340'
-    event_v1 = {"accountNumber": account_number, "amount": "1"}
-    event_v2 = {"accountNumber": account_number, "amount": "-3"}
-    final_balance = -2
+    event_v1 = {"accountNumber": account_number, "balance": "1"}
+    event_v2 = {"accountNumber": account_number, "balance": "-3"}
+    final_balance = -3
     worker.consumer.produce(event_v1)
     worker.consumer.produce(event_v2)
-    assert balance.fetch_by_account_number(
-        account_number)['clearedBalance'] == final_balance
+    stored_balance = balance.fetch_by_account_number(account_number)['clearedBalance']  # noqa
+    assert stored_balance == final_balance
