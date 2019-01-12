@@ -1,19 +1,19 @@
 from unittest.mock import Mock
-import json
+
 import pytest
 
-from balance_service.worker.worker import Worker
-from balance_service.worker.mock.mock_rabbit_events import MockEvents
 from balance_service.mocks.mock_balance_repository import MockBalanceRepository
 from balance_service.worker.config import config
+from balance_service.worker.mock.mock_rabbit_events import MockEvents
+from balance_service.worker.worker import Worker
 
 
 @pytest.fixture(scope='function')
 def worker(balance, logger):
     worker = Worker(consumer=MockEvents(),
-                         balance=balance,
-                         config=config,
-                         logger=logger)
+                    balance=balance,
+                    config=config,
+                    logger=logger)
     worker.start()
     return worker
 

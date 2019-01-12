@@ -25,7 +25,7 @@ class Worker:
             'accountNumber': account_number,
             'clearedBalance': None
         }
-        if available_balance == None:
+        if available_balance is None:
             data['clearedBalance'] = amount
         else:
             self.logger.debug('Found account with balance')

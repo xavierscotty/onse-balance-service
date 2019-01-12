@@ -1,7 +1,3 @@
-import pytest
-import json
-
-
 def test_store_contains_account_data(balance_repository):
     account_number = "99999"
     account_data = {
@@ -20,4 +16,4 @@ def test_store_contains_no_account_data(balance_repository):
         "clearedBalance": 4231
     }
     result = balance_repository.store(account_number, account_data)
-    assert result == None
+    assert result is None

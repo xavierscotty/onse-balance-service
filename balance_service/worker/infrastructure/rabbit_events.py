@@ -5,10 +5,10 @@ from balance_service.worker.utils import transpose_event
 
 class RabbitConnection:
     def __init__(self, config):
-        params = ConnectionParameters(host=config.RABBITMQ_HOST,
-                                      heartbeat_interval=int(
-                                          config.RABBITMQ_HEARTBEAT_INTERVAL),
-                                      blocked_connection_timeout=int(config.RABBITMQ_HEARTBEAT_INTERVAL))
+        params = ConnectionParameters(
+            host=config.RABBITMQ_HOST,
+            heartbeat_interval=int(config.RABBITMQ_HEARTBEAT_INTERVAL),
+            blocked_connection_timeout=int(config.RABBITMQ_HEARTBEAT_INTERVAL))
         self._connection = BlockingConnection(params)
 
     def get_channel(self):
@@ -28,6 +28,7 @@ class RabbitConsumer(RabbitConnection):
         def callback(ch, method, properties, body):
             payload = transpose_event(body)
             action(payload)
+
         channel = self.get_channel()
         channel.basic_consume(queue=self.queue,
                               consumer_callback=callback,

@@ -1,18 +1,11 @@
-import json
 import logging
 
 from structlog import wrap_logger
 
-from balance_service.worker.worker import Worker
 from balance_service.app import app
-
-
 from balance_service.mocks.mock_balance_repository import MockBalanceRepository
 from balance_service.worker.mock.mock_rabbit_events import MockEvents
-
-
-def before_all(context):
-    pass
+from balance_service.worker.worker import Worker
 
 
 def before_feature(context, feature):

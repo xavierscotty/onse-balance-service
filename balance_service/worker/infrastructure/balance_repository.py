@@ -1,5 +1,6 @@
-from redis import Redis
 from json import loads, dumps
+
+from redis import Redis
 
 
 class RedisJsonConnection:
@@ -12,7 +13,7 @@ class RedisJsonConnection:
 
     def _get(self, key):
         result = self._connection.get(key)
-        if result == None:
+        if result is None:
             return None
         return loads(result)
 
@@ -27,6 +28,6 @@ class BalanceRepository(RedisJsonConnection):
 
     def fetch_by_account_number(self, account_number):
         result = self._get(f'{self.config.BALANCE_NAMESPACE}:{account_number}')
-        if result == None:
+        if result is None:
             return None
         return result

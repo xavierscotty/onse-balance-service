@@ -1,7 +1,9 @@
-from flask_redis import FlaskRedis
 from json import loads, dumps
 
+from flask_redis import FlaskRedis
+
 from balance_service.worker.config import config
+
 
 class RedisJsonFlaskConnection(FlaskRedis):
     def __init__(self, **kwargs):
@@ -12,7 +14,7 @@ class RedisJsonFlaskConnection(FlaskRedis):
 
     def _get(self, key):
         result = self.get(key)
-        if result == None:
+        if result is None:
             return None
         return loads(result)
 

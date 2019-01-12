@@ -1,5 +1,4 @@
 from json import loads, dumps
-from balance_service.app.infrastructure.balance_repository import AccountNotFound
 
 
 class MockBalanceRepository():
@@ -17,6 +16,6 @@ class MockBalanceRepository():
 
     def fetch_by_account_number(self, account_number):
         result = self._store.get(account_number)
-        if result == None:
+        if result is None:
             return None
         return loads(result)
