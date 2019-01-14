@@ -6,18 +6,19 @@ from os import environ
 class config(object):
     """Base configuration."""
     # APPLICATION
-    APP_NAME = environ.get('APP_NAME') or 'Balance Service Worker'
+    APP_NAME = environ.get('APP_NAME', 'Balance Service Worker')
     # Redis
-    REDIS_URL = environ.get('REDIS_URL') or 'redis://localhost:6379/0'
-    BALANCE_NAMESPACE = environ.get('BALANCE_NAMESPACE') or 'balance'
-    ENV = environ.get('ENV') or 'development'
+    REDIS_URL = environ.get('REDIS_URL', 'redis://localhost:6379/0')
+    BALANCE_NAMESPACE = environ.get('BALANCE_NAMESPACE', 'balance')
+    ENV = environ.get('ENV', 'development')
     # RabbitMQ
-    RABBITMQ_HOST = environ.get('RABBITMQ_HOST') or ''
-    RABBITMQ_CONSUMER_QUEUE = environ.get('RABBITMQ_CONSUMER_QUEUE') or ''
-    RABBITMQ_HEARTBEAT_INTERVAL = environ.get(
-        'RABBITMQ_HEARTBEAT_INTERVAL') or 600
-    RABBITMQ_CONNECTION_TIMEOUT = environ.get(
-        'RABBITMQ_CONNECTION_TIMEOUT') or 300
+    RABBITMQ_HOST = environ.get('RABBITMQ_HOST', '')
+    RABBITMQ_CONSUMER_EXCHANGE = environ.get('RABBITMQ_CONSUMER_EXCHANGE', '')
+    RABBITMQ_CONSUMER_QUEUE = environ.get('RABBITMQ_CONSUMER_QUEUE', '')
+    RABBITMQ_HEARTBEAT_INTERVAL = environ.get('RABBITMQ_HEARTBEAT_INTERVAL',
+                                              600)
+    RABBITMQ_CONNECTION_TIMEOUT = environ.get('RABBITMQ_CONNECTION_TIMEOUT',
+                                              300)
 
 
 class test_config():

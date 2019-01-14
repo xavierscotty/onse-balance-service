@@ -32,6 +32,7 @@ services:
         BALANCE_NAMESPACE: balance
         RABBITMQ_PORT: 5672
         RABBITMQ_HOST: message-bus
+        RABBITMQ_CONSUMER_EXCHANGE: balance_updates
         RABBITMQ_CONSUMER_QUEUE: balance_updates
       networks:
         - default
