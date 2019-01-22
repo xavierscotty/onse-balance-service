@@ -67,11 +67,11 @@ podTemplate(name: 'balance-service-build', label: label, yaml: build_pod_templat
         withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
           echo "Building app image ${app_image_name}"
           sh """#!/busybox/sh
-          /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --skip-tls-verify --cache=true --destination=${app_image_name}
+          /kaniko/executor -f `pwd`/Dockerfile.app -c `pwd` --skip-tls-verify --cache=true --destination=${app_image_name}
           """
           echo "Building worker image ${worker_image_name}"
           sh """#!/busybox/sh
-          /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --skip-tls-verify --cache=true --destination=${worker_image_name}
+          /kaniko/executor -f `pwd`/Dockerfile.worker -c `pwd` --skip-tls-verify --cache=true --destination=${worker_image_name}
           """
         }
       }
