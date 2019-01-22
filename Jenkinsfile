@@ -56,19 +56,30 @@ podTemplate(name: 'balance-service-build', label: label, yaml: build_pod_templat
         }
     }
 
-    stage('Build Image') {
+    stage('Build App Image') {
       git_commit = sh (
         script: 'git rev-parse HEAD',
         returnStdout: true
       ).trim()
       app_image_name += ":${git_commit}"
-      worker_image_name += ":${git_commit}"
       container(name: 'kaniko', shell: '/busybox/sh') {
         withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
           echo "Building app image ${app_image_name}"
           sh """#!/busybox/sh
           /kaniko/executor -f `pwd`/Dockerfile.app -c `pwd` --skip-tls-verify --cache=true --destination=${app_image_name}
           """
+        }
+      }
+    }
+
+    stage('Build Worker Image') {
+      git_commit = sh (
+        script: 'git rev-parse HEAD',
+        returnStdout: true
+      ).trim()
+      worker_image_name += ":${git_commit}"
+      container(name: 'kaniko', shell: '/busybox/sh') {
+        withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
           echo "Building worker image ${worker_image_name}"
           sh """#!/busybox/sh
           /kaniko/executor -f `pwd`/Dockerfile.worker -c `pwd` --skip-tls-verify --cache=true --destination=${worker_image_name}
