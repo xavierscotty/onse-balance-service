@@ -4,7 +4,9 @@ from balance_service.worker.utils import transpose_event
 
 
 class RabbitConnection:
-    def __init__(self, config):
+    def __init__(self, config, logger):
+        logger.info('Connecting to RabbitMQ', host=config.RABBITMQ_HOST)
+
         params = ConnectionParameters(
             host=config.RABBITMQ_HOST,
             heartbeat_interval=int(config.RABBITMQ_HEARTBEAT_INTERVAL),
@@ -22,8 +24,8 @@ class RabbitConnection:
 
 
 class RabbitConsumer(RabbitConnection):
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config, logger):
+        super().__init__(config, logger)
 
         self.queue = config.RABBITMQ_CONSUMER_QUEUE
 
