@@ -15,7 +15,17 @@ metadata:
   name: build-pod
 spec:
   containers:
-  - name: kaniko
+  - name: app-image-builder
+    image: ${kaniko_image}
+    imagePullPolicy: Always
+    command:
+    - /busybox/cat
+    tty: true
+    volumeMounts:
+      - name: jenkins-docker-cfg
+        mountPath: /root/.docker
+
+  - name: worker-image-builder
     image: ${kaniko_image}
     imagePullPolicy: Always
     command:
@@ -62,7 +72,7 @@ podTemplate(name: 'balance-service-build', label: label, yaml: build_pod_templat
         returnStdout: true
       ).trim()
       app_image_name += ":${git_commit}"
-      container(name: 'kaniko', shell: '/busybox/sh') {
+      container(name: 'app-image-builder', shell: '/busybox/sh') {
         withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
           echo "Building app image ${app_image_name}"
           sh """#!/busybox/sh
@@ -78,7 +88,7 @@ podTemplate(name: 'balance-service-build', label: label, yaml: build_pod_templat
         returnStdout: true
       ).trim()
       worker_image_name += ":${git_commit}"
-      container(name: 'kaniko', shell: '/busybox/sh') {
+      container(name: 'worker-image-builder', shell: '/busybox/sh') {
         withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
           echo "Building worker image ${worker_image_name}"
           sh """#!/busybox/sh
