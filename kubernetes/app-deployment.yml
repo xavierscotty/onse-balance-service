@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: balance-service
+  labels:
+    app: balance-service
+spec:
+  selector:
+    matchLabels:
+      app: balance-service
+      tier: api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: balance-service
+        tier: api
+    spec:
+      containers:
+      - image: aklearning/eng-lab-balance-service
+        name: balance-service
+        ports:
+        - containerPort: 5000
+        imagePullPolicy: Always
+        env:
+        - name: BALANCE_NAMESPACE
+          value: balance
+        - name: PORT
+          value: "5000"
+        - name: REDIS_URL
+          value: redis://balance-service-store:6379

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: balance-worker
+  labels:
+    app: balance-service
+spec:
+  selector:
+    matchLabels:
+      app: balance-service
+      tier: worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: balance-service
+        tier: worker
+    spec:
+      containers:
+      - image: aklearning/eng-lab-balance-worker
+        name: balance-service
+        imagePullPolicy: Always
+        env:
+        - name: BALANCE_NAMESPACE
+          value: balance
+        - name: PORT
+          value: "5000"
+        - name: REDIS_URL
+          value: redis://balance-service-store:6379
+        - name: RABBITMQ_HOST
+          value: message-bus
+        - name: RABBITMQ_PORT
+          value: "5672"
+        - name: RABBITMQ_CONSUMER_EXCHANGE
+          value: balance_updates
+        - name: RABBITMQ_CONSUMER_QUEUE
+          value: balance_updates

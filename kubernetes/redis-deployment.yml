@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: balance-service-store
+  labels:
+    app: balance-service
+spec:
+  selector:
+    matchLabels:
+      app: balance-service
+      tier: redis
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: balance-service
+        tier: redis
+    spec:
+      containers:
+      - image: redis
+        name: redis
+        ports:
+        - containerPort: 6379
