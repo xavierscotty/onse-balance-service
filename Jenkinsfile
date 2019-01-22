@@ -1,4 +1,5 @@
-def image_name = "aklearning/onse-balance-service"
+def app_image_name = "aklearning/onse-balance-service"
+def worker_image_name = "aklearning/onse-balance-service-worker"
 def namespace = 'aklearning'
 def git_repository = 'https://github.com/ONSdigital/onse-balance-service'
 
@@ -60,12 +61,17 @@ podTemplate(name: 'balance-service-build', label: label, yaml: build_pod_templat
         script: 'git rev-parse HEAD',
         returnStdout: true
       ).trim()
-      image_name += ":${git_commit}"
-      echo "Building image ${image_name}"
+      app_image_name += ":${git_commit}"
+      worker_image_name += ":${git_commit}"
       container(name: 'kaniko', shell: '/busybox/sh') {
         withEnv(['PATH+EXTRA=/busybox:/kaniko']) {
+          echo "Building app image ${app_image_name}"
           sh """#!/busybox/sh
-          /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --skip-tls-verify --cache=true --destination=${image_name}
+          /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --skip-tls-verify --cache=true --destination=${app_image_name}
+          """
+          echo "Building worker image ${worker_image_name}"
+          sh """#!/busybox/sh
+          /kaniko/executor -f `pwd`/Dockerfile -c `pwd` --skip-tls-verify --cache=true --destination=${worker_image_name}
           """
         }
       }
@@ -84,7 +90,8 @@ podTemplate(name: 'balance-service-build', label: label, yaml: build_pod_templat
               --server=$KUBERNETES_SERVER \
               --certificate-authority=$KUBERNETES_CA
           '''
-          sh "yq.v2 w -i kubernetes/deployment.yml 'spec.template.spec.containers[0].image' ${image_name}"
+          sh "yq.v2 w -i kubernetes/app-deployment.yml 'spec.template.spec.containers[0].image' ${app_image_name}"
+          sh "yq.v2 w -i kubernetes/worker-deployment.yml 'spec.template.spec.containers[0].image' ${worker_image_name}"
           sh "kubectl create namespace ${namespace} || true"
           sh "kubectl apply -n ${namespace} -f kubernetes/"
         }
