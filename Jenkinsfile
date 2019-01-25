@@ -1,4 +1,4 @@
-def github_id
+def github_id = 'ONSdigital'
 
 def namespace = github_id.toLowerCase()
 def app_image_name = "onsetraining/${namespace}-balance-service"
